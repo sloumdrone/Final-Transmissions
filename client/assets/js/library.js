@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-var touchStartCoords =  {'x':-1, 'y':-1}, // X and Y coordinates on mousedown or touchstart events.
-    touchEndCoords = {'x':-1, 'y':-1},// X and Y coordinates on mouseup or touchend events.
-    direction = 'undefined',// Swipe direction
-    minDistanceXAxis = 30,// Min distance on mousemove or touchmove on the X axis
-    maxDistanceYAxis = 30,// Max distance on mousemove or touchmove on the Y axis
-    maxAllowedTime = 1000,// Max allowed time between swipeStart and swipeEnd
-    startTime = 0,// Time on swipeStart
-    elapsedTime = 0,// Elapsed time between swipeStart and swipeEnd
-    elementArr = document.getElementsByClassName("story"), // Element to delegate
+var touchStartCoords =  {'x':-1, 'y':-1},
+    touchEndCoords = {'x':-1, 'y':-1},
+    direction = 'undefined',
+    minDistanceXAxis = 30,
+    maxDistanceYAxis = 30,
+    maxAllowedTime = 1000,
+    startTime = 0,
+    elapsedTime = 0,
+    elementArr = document.getElementsByClassName("story"), 
     currentSpot = 0;
     newSpot = null,
     triangleLeft = document.querySelector('.triangle-left'),

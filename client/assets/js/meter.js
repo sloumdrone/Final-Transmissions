@@ -77,7 +77,7 @@ function loadAll(){
         }
         if (count === 1 && chapter < 5){
             sounds.numLoaded++;
-        } // get rid of this once valid sounds start getting passed from the db
+        }
         sounds[count] = loadSound(sounds.sources[i], loop);
         count++;
     }
@@ -134,12 +134,10 @@ function handleEventHandlers(){
 
     knobImg.addEventListener('click', function(){
         knobRange(knobImg);
-    });//turning the knob for range meter switch;
-    uiSwitch.addEventListener('click',flipSwitch);//turns on the gadget
+    });
 
-    window.addEventListener('orientationchange',handleOrientation);//switch from meter to camera;
-
-
+    uiSwitch.addEventListener('click',flipSwitch);
+    window.addEventListener('orientationchange',handleOrientation);
     nextEvent.addEventListener('click', moveToNextChapter);
 }
 //****************************************
@@ -277,7 +275,6 @@ function handleMeter(){
 //++
 //++
 function fullscreen(){
-    //use to check if fullscreen is available by asking user permission by clicking on the "READY" (#loading ) multiple ifs for each type of browser
     document.getElementById('loading').classList.add('hide');
     var gauge = document.getElementById('gauge-wrapper');
     if(gauge.requestFullscreen){
@@ -293,7 +290,6 @@ function fullscreen(){
 //++
 //++
 function handleOrientation(event){
-    //use to listen for device orientation change to switch from ESR or Ghost CAM
     const gaugeWrapper = document.getElementById('gauge-wrapper');
     const camera = document.getElementById('camera');
     const tilt = document.querySelector('.tilt');
@@ -321,8 +317,6 @@ function handleOrientation(event){
 //++
 //++
 function getLocation() {
-    //our general purpose call for location data
-    console.log('getting location');
     var options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -341,13 +335,12 @@ function getLocation() {
 
 
     function showSuccess(pos) {
-        //Since we succeeded, clear the errors
+        //clear the errors
         errorCount = 0;
 
         //pos also includes pos.timestamp if needed later
         //moved ready modal details into audio load callback
         coord = pos.coords;
-        console.log('Coord Success');
 
         distance = getDistanceFromLatLonInKm(coord.latitude,coord.longitude,target.latitude,target.longitude);
 
@@ -360,11 +353,10 @@ function getLocation() {
 
     function showError(err){
         errorCount++;
-        console.warn(`ERROR(${err.code}) - (${errorCount}) bad calls`);
 
         if (errorCount > 10){
-            //tell the user they are having issues with their gps connection
-            //possibly end app usage for later resume
+            //Redirect to story page on too many gps errors
+            //Update this in the future to better error handling messages to user
             window.location.href = "/profile";
         }
     }
@@ -372,14 +364,14 @@ function getLocation() {
 //++
 //++
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var R = 6371;
+    var dLat = deg2rad(lat2-lat1);
     var dLon = deg2rad(lon2-lon1);
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
     Math.sin(dLon/2) * Math.sin(dLon/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c; // Distance in km
+    var d = R * c;
     return d * 1000; //Distance in meters
 }
 //++
@@ -423,8 +415,6 @@ function grabChapterAssets(){
     const storyID = sessionStorage.getItem('story_id');
 
     axios.get('/state',{params : {story: storyID}}).then( handleStateAssetLoading ).catch( error => {
-        console.warn('Axios GET from state issue');
-        console.log(error);
         window.location.href = "/story/id/" + storyID;
     });
 }
@@ -472,11 +462,6 @@ function makeVisible(number){
             shapeArray[i].classList.add('hide');
         }
     }
-}
-//++
-//++
-function loadARObjects(){
-    console.log("I'm loading your objects!!!");
 }
 //++
 //++

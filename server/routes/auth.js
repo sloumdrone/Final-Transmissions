@@ -50,7 +50,6 @@ module.exports = function (app, passport) {
 			sql1result = result;
 		});
 		connection.query(sql2,(err,result,fields)=>{
-			console.log(result);
 			res.render("profile",{
 				userdata: sql1result,
 				storydata: result
@@ -76,7 +75,6 @@ module.exports = function (app, passport) {
 
 
 		connection.query(sql,(err,result,fields)=>{
-			console.log(result);
 			res.render("story",{
 				storyDetails: result[0][0],
 				chapterDetails: result[1]
