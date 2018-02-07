@@ -24,4 +24,12 @@ Once you enter the story experience you will have a meter that will guide you fr
   - MySQL
   -- Most dependencies can be seen in the package.json file or in ./client/assets/lib/
 
-Given the size of the AR libraries in use, the main app (cilentside) has been coded in vanilla JavaScript to reduce general heaviness.
+
+### Authors/Contributors
+
+* **Alicia Evans** - *Project Manager/Front End Developer* - [GitHub](https://github.com/unleashalicia)
+* **Brian Evans** - *Full Stack Developer* - [GitHub](https://github.com/sloumdrone)
+* **Francis Redido** - *Front End Developer* - [GitHub](https://github.com/sicnarfodider)
+* **Lori Mitchell** - *Front End Developer* - [GitHub](https://github.com/lmitchell524)
+* **Jeffrey Pau** - *Back End Developer* - [GitHub](https://github.com/Finleth)
+* **Francesca Sinocruz** - *Back End Developer* - [GitHub](https://github.com/csinocruz)
