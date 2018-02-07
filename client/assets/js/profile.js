@@ -2,31 +2,28 @@ document.addEventListener('DOMContentLoaded', handleEventHandlers);
 
 
 
-function handleEventHandlers(){
+function handleEventHandlers() {
 
     const confirm = document.querySelectorAll(".log-out");
     const noBtn = document.querySelector(".no");
     const logOutModal = document.querySelector(".logOut-container");
     const editText = document.querySelectorAll(".edit-text");
-    // debugger;
 
     editText.forEach((elem)=>elem.addEventListener("click",makeInput))
-        //for email to input change
     noBtn.addEventListener("click",function(){
         logOutModal.classList.add("hide");
-    }); //gets the user back to the profile page
+    });
 
     for(let i=0;i<confirm.length;i++){
         confirm[i].addEventListener("click", function(){
             logOutModal.classList.remove("hide")
-     }); // adds it to the two separate button // shows log out confirm modal.
+     });
     }
 
     heightMonitor();
-//     checkStories();
 }
 
-function heightMonitor(){ //Monitors if the container height vs window height to accomodate the fog animation.
+function heightMonitor() {
     const userContainer = document.querySelector('#user-container');
     if(userContainer.offsetHeight<window.innerHeight){
         userContainer.style.height="100vh"
@@ -37,7 +34,7 @@ function heightMonitor(){ //Monitors if the container height vs window height to
 
 
 
-function makeInput(){//the email is replaced with an input element
+function makeInput() {
     this.disabled=true;
     const fragment = document.createDocumentFragment();
     const form = document.createElement("form")
@@ -60,7 +57,7 @@ function makeInput(){//the email is replaced with an input element
             console.log(this.previousSibling.value)
         }
     }
-    cancel.onclick=function(){
+    cancel.onclick=function() {
         revertInput();
     }
     cancel.textContent="Cancel"
@@ -72,7 +69,7 @@ function makeInput(){//the email is replaced with an input element
 }
 
 
-function revertInput(){//function reverting the input back to email
+function revertInput() {
     document.querySelector(".edit-text").disabled=false;
     const fragment = document.createDocumentFragment();
     const div = document.createElement('div');
@@ -87,7 +84,7 @@ function revertInput(){//function reverting the input back to email
 
 
 
-function updateEmail(elem){// dummy axios call to be filled up when the change to email is going to be implemented
+function updateEmail(elem) {
 const inputData = elem.previousSibling.value
     axios.put({
         url: "/email",
@@ -96,16 +93,8 @@ const inputData = elem.previousSibling.value
         data: inputData
     }).then(function(response) {
         document.querySelector('.modal').classList.add('hide');
-        console.log(response);
-        console.log("This is the page that will be redirected to: ", response.data.URL);
         window.location = response.data.URL;
     }).catch(function(error) {
         console.error(errorMsg, error);
     });
 }
-
-// function checkStories(){
-//     if(!document.querySelector('.story-list li')){
-//         document.querySelector('.story-container h3').innerText="visit the Library to start a story"
-//     }
-// }

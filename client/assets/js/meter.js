@@ -21,6 +21,7 @@ var sounds = {
 };
 var speaking;
 var looping;
+var ending;
 var effect;
 var target = {
     latitude: 0,
@@ -32,7 +33,7 @@ var distance;
 var knobMode='long';
 var action;
 var next = false;
-var seen = false;
+var chapter;
 //****************************************
 //****************************************
 //--|
@@ -68,13 +69,15 @@ function loadSound(location, setLoop){
 function loadAll(){
     let count = 0;
     for (let i in sounds.sources){
-        var loop = false;
+        var loop;
         if (i === 'outerAudio'){
             loop = true;
+        } else {
+            loop = false;
         }
-        if (count === 1){
+        if (count === 1 && chapter < 5){
             sounds.numLoaded++;
-        } // get rid of this once valid sounds start getting passed from the db
+        }
         sounds[count] = loadSound(sounds.sources[i], loop);
         count++;
     }
@@ -93,16 +96,19 @@ function handleAudioPlayback(dist){
         sounds[0].fade(0.7,0,1000,looping);
     }
 
-    if (dist <= target.talkThreshold && !sounds[1].playing(speaking) && !sounds.speakingPlayed && deviceOn) {
+    if (dist <= target.talkThreshold && !sounds[1].playing(speaking) && deviceOn) {
         if (!speaking){
             speaking = sounds[1].play();
+            sounds[1].fade(0,0.9,1500,speaking);
             sounds[1].on('end',function(){
                 sounds.speakingPlayed = true;
             }, speaking);
         } else {
-            sounds[1].play(speaking);
+            if (!sounds.speakingPlayed){
+                sounds[1].play(speaking);
+                sounds[1].fade(0,0.9,1500,speaking);
+            }
         }
-        sounds[1].fade(0,0.9,1500,speaking);
     } else if (dist > target.talkThreshold && sounds[1].playing(speaking)){
         sounds[1].fade(0.9,0,1500,speaking).once('fade',function(){
             sounds[1].pause(speaking);
@@ -128,12 +134,10 @@ function handleEventHandlers(){
 
     knobImg.addEventListener('click', function(){
         knobRange(knobImg);
-    });//turning the knob for range meter switch;
-    uiSwitch.addEventListener('click',flipSwitch);//turns on the gadget
+    });
 
-    window.addEventListener('orientationchange',handleOrientation);//switch from meter to camera;
-
-
+    uiSwitch.addEventListener('click',flipSwitch);
+    window.addEventListener('orientationchange',handleOrientation);
     nextEvent.addEventListener('click', moveToNextChapter);
 }
 //****************************************
@@ -271,7 +275,6 @@ function handleMeter(){
 //++
 //++
 function fullscreen(){
-    //use to check if fullscreen is available by asking user permission by clicking on the "READY" (#loading ) multiple ifs for each type of browser
     document.getElementById('loading').classList.add('hide');
     var gauge = document.getElementById('gauge-wrapper');
     if(gauge.requestFullscreen){
@@ -287,7 +290,6 @@ function fullscreen(){
 //++
 //++
 function handleOrientation(event){
-    //use to listen for device orientation change to switch from ESR or Ghost CAM
     const gaugeWrapper = document.getElementById('gauge-wrapper');
     const camera = document.getElementById('camera');
     const tilt = document.querySelector('.tilt');
@@ -315,8 +317,6 @@ function handleOrientation(event){
 //++
 //++
 function getLocation() {
-    //our general purpose call for location data
-    console.log('getting location');
     var options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -335,13 +335,12 @@ function getLocation() {
 
 
     function showSuccess(pos) {
-        //Since we succeeded, clear the errors
+        //clear the errors
         errorCount = 0;
 
         //pos also includes pos.timestamp if needed later
         //moved ready modal details into audio load callback
         coord = pos.coords;
-        console.log('Coord Success');
 
         distance = getDistanceFromLatLonInKm(coord.latitude,coord.longitude,target.latitude,target.longitude);
 
@@ -354,11 +353,10 @@ function getLocation() {
 
     function showError(err){
         errorCount++;
-        console.warn(`ERROR(${err.code}) - (${errorCount}) bad calls`);
 
         if (errorCount > 10){
-            //tell the user they are having issues with their gps connection
-            //possibly end app usage for later resume
+            //Redirect to story page on too many gps errors
+            //Update this in the future to better error handling messages to user
             window.location.href = "/profile";
         }
     }
@@ -366,14 +364,14 @@ function getLocation() {
 //++
 //++
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var R = 6371;
+    var dLat = deg2rad(lat2-lat1);
     var dLon = deg2rad(lon2-lon1);
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
     Math.sin(dLon/2) * Math.sin(dLon/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c; // Distance in km
+    var d = R * c;
     return d * 1000; //Distance in meters
 }
 //++
@@ -417,8 +415,6 @@ function grabChapterAssets(){
     const storyID = sessionStorage.getItem('story_id');
 
     axios.get('/state',{params : {story: storyID}}).then( handleStateAssetLoading ).catch( error => {
-        console.warn('Axios GET from state issue');
-        console.log(error);
         window.location.href = "/story/id/" + storyID;
     });
 }
@@ -429,6 +425,7 @@ function handleStateAssetLoading(data){
     const miscAssets = data.data[0][0];
     const cam = document.getElementById('camera');
     const storyID = sessionStorage.getItem('story_id');
+    chapter = miscAssets.state_id;
 
     target.latitude = parseFloat(miscAssets.lat);
     target.longitude = parseFloat(miscAssets.lon);
@@ -468,11 +465,6 @@ function makeVisible(number){
 }
 //++
 //++
-function loadARObjects(){
-    console.log("I'm loading your objects!!!");
-}
-//++
-//++
 function handleARvisibility(){
     if (!next && distance < target.talkThreshold){
         next = true;
@@ -485,8 +477,12 @@ function markerListener(){
     const tilt = document.querySelector('.tilt');
     nextEvent.classList.remove("hide");
     tilt.style.display="block";
+    if (chapter == 5){
+        ending = sounds[2].play();
+        sounds[2].fade(0,0.9,1500,ending);
+        sounds[1].fade(0.9,0.5,1500,speaking);
+    }
 }
-
 //****************************************
 //**************END***********************
 //****************************************

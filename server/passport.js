@@ -83,7 +83,7 @@ module.exports = {
                         return done(null, false);
                     }
 
-					console.log('Successful sign in');
+					console.log('Successful sign in ' + userHandle);
 
                     return done(null, results[0].id);
                 });

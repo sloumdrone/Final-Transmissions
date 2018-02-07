@@ -1,13 +1,3 @@
-
-/*
-
-setAttributes function:
-Input: element and an object with key/value pairs for attributes.
-Output:
-
- */
-
-
 function setAttributes(element, attributeObj) {
 
     for (let item in attributeObj){
@@ -116,7 +106,7 @@ function createScene(object){
     fragment.append(span);
     ARcontainer.appendChild(scene);
     ARcontainer.appendChild(fragment);
-    
+
     //extra js functionality
 
 
@@ -249,9 +239,6 @@ function createScene(object){
             }
 
             break;
-
-        default:
-            console.log("There was an error making this work.");
     } //end of extra functionality switch statement
 
     //#################################################################################
@@ -277,7 +264,6 @@ function createScene(object){
 
 window.addEventListener("markerFound", function(){
     if(distance < target.talkThreshold && !seen) {
-        console.log("markerFound!");
         seen = true;
         let nextBtn = document.getElementsByClassName('next-event');
         for (let x in nextBtn){
@@ -287,4 +273,3 @@ window.addEventListener("markerFound", function(){
         }
     }
 });
-

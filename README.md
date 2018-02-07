@@ -12,7 +12,7 @@ Once you enter the story experience you will have a meter that will guide you fr
  - High quality voice acting / sound
  - Mobile camera integration
  - User area (stores story progress on a per user basis)
- 
+
 ## Dependencies
   - Node.js / NPM
   - A-Frame
