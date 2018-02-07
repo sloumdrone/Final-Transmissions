@@ -25,7 +25,7 @@ Once you enter the story experience you will have a meter that will guide you fr
   -- Most dependencies can be seen in the package.json file or in ./client/assets/lib/
 
 
-### Authors/Contributors
+## Authors/Contributors
 
 * **Alicia Evans** - *Project Manager/Front End Developer* - [GitHub](https://github.com/unleashalicia)
 * **Brian Evans** - *Full Stack Developer* - [GitHub](https://github.com/sloumdrone)
